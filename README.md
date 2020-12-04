@@ -2,7 +2,7 @@
 
 # defining a smart contract 
       signer is defined above no need to define again
-      const smartcontract =new Contract(address of smart contract,abi of      smartcontract, signer);
+      const smartcontract =new Contract(address of smart contract,abi of smartcontract, signer);
 
 # calling smart contract function
 
