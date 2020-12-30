@@ -1,0 +1,57 @@
+$medium-pink: rgb(226, 214, 207);
+$light-pink: rgb(247, 244, 242);
+
+.cardContainer {
+  height: 100%;
+  width: 100%;
+  background-color: $medium-pink;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  .card {
+    padding: 3rem;
+    margin: 1rem;
+    width: calc(min(100%, 350px));
+    height: 350px;
+    border-radius: 15px;
+    background-color: $light-pink;
+
+    .cardSubContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      .value,
+      .valueName {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 1.5rem;
+        color: rgb(91, 57, 38);
+      }
+      .valueName {
+        font-size: 1rem;
+      }
+      .btnContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+        .btn {
+          border-color: $medium-pink;
+          box-shadow: rgb(226, 214, 207) 6px 6px 12px,
+            rgb(247, 244, 242) -12px -12px 24px -2px;
+        }
+      }
+    }
+  }
+}
+.footNoteContainer {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1rem;
+  background-color: $medium-pink;
+  color: rgb(91, 57, 38);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

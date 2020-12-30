@@ -1,19 +1,20 @@
-import { ethers, Contract } from "ethers";
-import React, { useEffect, useState } from "react";
-import detectEthereumProvider from "@metamask/detect-provider";
-import Helloabi from "./contracts/Hello.json";
-import Web3 from "web3";
-import Navbar from "./Navbar";
-import swal from "sweetalert";
+import { ethers, Contract } from 'ethers';
+import React, { useEffect, useState } from 'react';
+import detectEthereumProvider from '@metamask/detect-provider';
+import Helloabi from './contracts/Hello.json';
+import Web3 from 'web3';
+import Navbar from './Navbar';
+import swal from 'sweetalert';
+import { HomePage } from './FarmingUI/components/HomePage.js';
 
 const App = () => {
   const [refresh, setrefresh] = useState(0);
-  const [getNetwork, setNetwork] = useState("");
+  const [getNetwork, setNetwork] = useState('');
 
   let content;
   const [loading2, setloading2] = useState(false);
 
-  const [account, setAccount] = useState("");
+  const [account, setAccount] = useState('');
   const [loading, setLoading] = useState(true);
   const [Hello, setHello] = useState({});
   const [SIGNER, SETSIGNER] = useState({});
@@ -24,14 +25,14 @@ const App = () => {
       await window.ethereum.enable();
     } else {
       window.alert(
-        "Non-Ethereum browser detected. You should consider trying MetaMask!"
+        'Non-Ethereum browser detected. You should consider trying MetaMask!'
       );
     }
   };
 
   const loadBlockchainData = async () => {
     setLoading(true);
-    if (typeof window.ethereum == "undefined") {
+    if (typeof window.ethereum == 'undefined') {
       return;
     }
 
@@ -43,7 +44,7 @@ const App = () => {
     let url = window.location.href;
     console.log(url);
 
-    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
     console.log(accounts);
     if (accounts.length == 0) {
       return;
@@ -57,7 +58,7 @@ const App = () => {
     });
     if (networkId) {
       // set network name here
-      setNetwork("Kovan");
+      setNetwork('Kovan');
       // defining a smart contract ;
       // signer is defined above no need to define again
       // const smartcontract = new Contract( /* address of smart contract*/  , /*  abi of smart contract */, signer);
@@ -78,7 +79,7 @@ const App = () => {
 
       setLoading(false);
     } else {
-      window.alert("the contract not deployed to detected network.");
+      window.alert('the contract not deployed to detected network.');
       setloading2(true);
     }
   };
@@ -98,7 +99,7 @@ const App = () => {
 
   const walletAddress = async () => {
     await window.ethereum.request({
-      method: "eth_requestAccounts",
+      method: 'eth_requestAccounts',
       params: [
         {
           eth_accounts: {},
@@ -121,29 +122,29 @@ const App = () => {
 
   if (loading === true) {
     content = (
-      <p className="text-center">
-        Loading...{loading2 ? <div>loading....</div> : ""}
+      <p className='text-center'>
+        Loading...{loading2 ? <div>loading....</div> : ''}
       </p>
     );
   } else {
     content = (
-      <div class="container">
-        <main role="main" class="container">
-          <div class="jumbotron">
+      <div class='container'>
+        <main role='main' class='container'>
+          <div class='jumbotron'>
             <h1>Project</h1>
-            <div className="row" style={{ paddingTop: "30px" }}>
-              {" "}
-              <div className="row" style={{ paddingLeft: "40px" }}>
+            <div className='row' style={{ paddingTop: '30px' }}>
+              {' '}
+              <div className='row' style={{ paddingLeft: '40px' }}>
                 <h3>text 1</h3>
               </div>
-              <div className="row" style={{ paddingLeft: "40px" }}>
+              <div className='row' style={{ paddingLeft: '40px' }}>
                 <h3>text 2</h3>
               </div>
-              <div className="row" style={{ paddingLeft: "40px" }}>
+              <div className='row' style={{ paddingLeft: '40px' }}>
                 <h3>text 3</h3>
               </div>
-              <div className="row" style={{ paddingLeft: "40px" }}>
-                <button className="btn btn-primary">Click on it</button>
+              <div className='row' style={{ paddingLeft: '40px' }}>
+                <button className='btn btn-primary'>Click on it</button>
               </div>
             </div>
           </div>
@@ -156,16 +157,17 @@ const App = () => {
     <div>
       <Navbar account={account} getNetwork={getNetwork} />
 
-      {account == "" ? (
-        <div className="container">
-          {" "}
-          Connect your wallet to application{"   "}{" "}
-          <button onClick={walletAddress} style={{ color: "black" }}>
+      {account == '' ? (
+        <div className='container'>
+          {' '}
+          Connect your wallet to application{'   '}{' '}
+          <button onClick={walletAddress} style={{ color: 'black' }}>
             metamask
           </button>
         </div>
       ) : (
-        content
+        // content
+        <HomePage />
       )}
     </div>
   );
