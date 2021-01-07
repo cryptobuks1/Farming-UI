@@ -1,8 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import "./HomePage.scss";
+import swal from "sweetalert";
+import { Card, InputNumber, Button } from "antd";
 
 export const HomePage = ({ deposit, harvest, unstake, getpendingrewards }) => {
   const value = "0.00000000";
+
+  const [inputval, setinputval] = useState(300000);
+  const onchangeinputval = (e) => {
+    setinputval(e);
+  };
+
+  const onsubmitapprove = () => {
+    // window.alert(inputval);
+
+    if (inputval <= 0) {
+      swal("input some value");
+    } else {
+      deposit(inputval);
+    }
+  };
+
+  const [inputvalunstake, setinputvalunstake] = useState(0);
+  const onchangeinputvalunstake = (e) => {
+    setinputval(e);
+  };
+
+  const onsubmitunstake = () => {
+    // window.alert(inputvalunstake);
+
+    if (inputvalunstake <= 0) {
+      swal("input some value");
+    } else {
+      unstake(inputvalunstake);
+    }
+  };
+
   return (
     <>
       <div className="cardContainer">
@@ -11,7 +44,19 @@ export const HomePage = ({ deposit, harvest, unstake, getpendingrewards }) => {
             <div className="value">{value}</div>
             <div className="valueName">Sushi status</div>
             <div className="btnContainer">
-              <button className="btn card1Btn">Harvest</button>
+              <button className="btn card1Btn" onClick={harvest}>
+                Harvest
+              </button>
+              <br></br>
+              <button className="btn card1Btn" onClick={onsubmitunstake}>
+                unstake
+              </button>
+              <InputNumber
+                min={1}
+                value={inputvalunstake}
+                onChange={onchangeinputvalunstake}
+                className="inputBox"
+              />
             </div>
           </div>
         </div>
@@ -20,8 +65,16 @@ export const HomePage = ({ deposit, harvest, unstake, getpendingrewards }) => {
             <div className="value">{value}</div>
             <div className="valueName">Sushi status</div>
             <div className="btnContainer">
-              <button className="btn card2Btn">Approve SUSHI-ETH SLP</button>
+              <button className="btn card2Btn" onClick={onsubmitapprove}>
+                deposit ETH_VNTW SLP
+              </button>
             </div>
+            <InputNumber
+              min={1}
+              value={inputval}
+              onChange={onchangeinputval}
+              className="inputBox"
+            />
           </div>
         </div>
       </div>

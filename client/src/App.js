@@ -65,7 +65,7 @@ const App = () => {
       networkId = result.chainId;
     });
     if (networkId == 1) {
-      let addressoflptoken = "0x0";
+      let addressoflptoken = "0xF71D9A8D70dF39DaCBd296b98c9b73998Ec8FD8e";
       let addressoffarm = "0xF71D9A8D70dF39DaCBd296b98c9b73998Ec8FD8e";
       setlptokenaddress(addressoflptoken);
       setfarmcontractaddress(addressoffarm);
@@ -78,11 +78,11 @@ const App = () => {
 
       setfarmcontract(farmsmartcontract);
 
-      let erc20smartcontract = new new Contract(
+      let erc20smartcontract = new Contract(
         addressoflptoken,
         tokenabi.abi,
         signer
-      )();
+      );
       settokencontract(erc20smartcontract);
       // console.log(farmsmartcontract);
 
@@ -128,8 +128,25 @@ const App = () => {
     await farmcontract.pendingReward(a).then((result) => {
       x = ethers.utils.formatUnits(result, 18);
     });
+    console.log(x);
     return x;
   };
+
+  // const intervalId = setInterval(getpendingrewards, 5000);
+
+  // const approvelp = (async) => {
+  //   try {
+  //     const tx = await tokencontract.approve(
+  //       lptokenaddress,
+  //       ethers.utils.parseEther(a.toString())
+  //     );
+  //     // swal("wait for one more transaction if it doest fail");
+  //     const txsign = await tx.wait();
+  //   } catch (e) {
+  //     console.log(e);
+  //     swal("the trasaction has been failed");
+  //   }
+  // };
 
   const deposit = async (a) => {
     try {
@@ -256,6 +273,7 @@ const App = () => {
           harvest={harvest}
           unstake={unstake}
           getpendingrewards={getpendingrewards}
+          // farmcontract = {farmcontract}
         />
       )}
     </div>
