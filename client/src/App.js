@@ -1,38 +1,46 @@
-import { ethers, Contract } from 'ethers';
-import React, { useEffect, useState } from 'react';
-import detectEthereumProvider from '@metamask/detect-provider';
-import Helloabi from './contracts/Hello.json';
-import Web3 from 'web3';
-import Navbar from './Navbar';
-import swal from 'sweetalert';
-import { HomePage } from './FarmingUI/components/HomePage.js';
-
+import { ethers, Contract } from "ethers";
+import React, { useEffect, useState } from "react";
+import detectEthereumProvider from "@metamask/detect-provider";
+import Helloabi from "./contracts/Hello.json";
+import Web3 from "web3";
+import Navbar from "./Navbar";
+import Farmabi from "./contracts/Farm01.json";
+import swal from "sweetalert";
+import { HomePage } from "./FarmingUI/components/HomePage.js";
+// import erc20abi from './contracts/SafeERC20.json';
+import tokenabi from "./contracts/token.json";
 const App = () => {
   const [refresh, setrefresh] = useState(0);
-  const [getNetwork, setNetwork] = useState('');
+  const [getNetwork, setNetwork] = useState("");
 
   let content;
   const [loading2, setloading2] = useState(false);
 
-  const [account, setAccount] = useState('');
+  const [account, setAccount] = useState("");
   const [loading, setLoading] = useState(true);
   const [Hello, setHello] = useState({});
   const [SIGNER, SETSIGNER] = useState({});
   const [flag, setflag] = useState(0);
+  const [farmcontract, setfarmcontract] = useState({});
+  const [farmcontractinfo, setfarmcontractinfo] = useState({});
+  const [tokencontract, settokencontract] = useState({});
+  const [lptokenaddress, setlptokenaddress] = useState("");
+  const [farmcontractaddress, setfarmcontractaddress] = useState("");
+
   // const provider = await detectEthereumProvider();
   const loadWeb3 = async () => {
     if (window.ethereum) {
       await window.ethereum.enable();
     } else {
       window.alert(
-        'Non-Ethereum browser detected. You should consider trying MetaMask!'
+        "Non-Ethereum browser detected. You should consider trying MetaMask!"
       );
     }
   };
 
   const loadBlockchainData = async () => {
     setLoading(true);
-    if (typeof window.ethereum == 'undefined') {
+    if (typeof window.ethereum == "undefined") {
       return;
     }
 
@@ -44,7 +52,7 @@ const App = () => {
     let url = window.location.href;
     console.log(url);
 
-    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
     console.log(accounts);
     if (accounts.length == 0) {
       return;
@@ -56,14 +64,45 @@ const App = () => {
     await provider.getNetwork().then((result) => {
       networkId = result.chainId;
     });
-    if (networkId) {
+    if (networkId == 1) {
+      let addressoflptoken = "0x0";
+      let addressoffarm = "0xF71D9A8D70dF39DaCBd296b98c9b73998Ec8FD8e";
+      setlptokenaddress(addressoflptoken);
+      setfarmcontractaddress(addressoffarm);
       // set network name here
-      setNetwork('Kovan');
+      setNetwork("Mainnet");
       // defining a smart contract ;
       // signer is defined above no need to define again
       // const smartcontract = new Contract( /* address of smart contract*/  , /*  abi of smart contract */, signer);
-      let smartcontract;
-      setHello(smartcontract);
+      let farmsmartcontract = new Contract(addressoffarm, Farmabi.abi, signer);
+
+      setfarmcontract(farmsmartcontract);
+
+      let erc20smartcontract = new new Contract(
+        addressoflptoken,
+        tokenabi.abi,
+        signer
+      )();
+      settokencontract(erc20smartcontract);
+      // console.log(farmsmartcontract);
+
+      let farmuserinfoamount, farmuserinforewarddebt, farmpendingrewards;
+
+      await farmsmartcontract.userInfo(accounts[0]).then((result) => {
+        // console.log(result);
+        farmuserinfoamount = ethers.utils.formatUnits(result.amount, 18);
+        farmuserinforewarddebt = ethers.utils.formatUnits(
+          result.rewardDebt,
+          18
+        );
+      });
+      await farmsmartcontract.pendingReward(accounts[0]).then((result) => {
+        // console.log(result);
+        farmpendingrewards = ethers.utils.formatUnits(result, 18);
+      });
+      console.log(farmuserinfoamount);
+      console.log(farmuserinforewarddebt);
+      console.log(farmpendingrewards);
 
       // if you want to call data from smart contract follow below
       // suppose there is function in smart contract which returns something
@@ -79,27 +118,72 @@ const App = () => {
 
       setLoading(false);
     } else {
-      window.alert('the contract not deployed to detected network.');
+      window.alert("the contract not deployed to detected network.");
       setloading2(true);
     }
   };
 
-  const onclick = async (a) => {
-    // if you want to go from eth to wei
-    // use this ethers.utils.parseEther(inputamount.toString())
-    // ethers.utils.formatUnits(unLockedTokens, 18))
-    // try {
-    //   const tx = await smartcontract.setCompleted(a.toString());
-    //   const txsign = await tx.wait();
-    //   window.location.reload();
-    // } catch (e) {
-    //   swal("error in doing transaction you are not admin");
-    // }
+  const getpendingrewards = async (a) => {
+    let x;
+    await farmcontract.pendingReward(a).then((result) => {
+      x = ethers.utils.formatUnits(result, 18);
+    });
+    return x;
+  };
+
+  const deposit = async (a) => {
+    try {
+      const tx = await tokencontract.approve(
+        lptokenaddress,
+        ethers.utils.parseEther(a.toString())
+      );
+      // swal("wait for one more transaction if it doest fail");
+      const txsign = await tx.wait();
+    } catch (e) {
+      console.log(e);
+      swal("the trasaction has been failed");
+    }
+
+    try {
+      const tx = await farmcontract.deposit(
+        ethers.utils.parseEther(a.toString())
+      );
+      const txsign = await tx.wait();
+
+      setrefresh(1);
+    } catch (e) {
+      console.log(e);
+      swal("the trasaction has been failed");
+    }
+  };
+
+  const harvest = async () => {
+    try {
+      const tx = await farmcontract.deposit(ethers.utils.parseEther(0));
+      const txsign = await tx.wait();
+
+      setrefresh(1);
+    } catch (e) {
+      console.log(e);
+      swal("the trasaction has been failed");
+    }
+  };
+
+  const unstake = async (a) => {
+    try {
+      const tx = await farmcontract.withdraw(ethers.utils.parseEther(a));
+      const txsign = await tx.wait();
+
+      setrefresh(1);
+    } catch (e) {
+      console.log(e);
+      swal("the trasaction has been failed");
+    }
   };
 
   const walletAddress = async () => {
     await window.ethereum.request({
-      method: 'eth_requestAccounts',
+      method: "eth_requestAccounts",
       params: [
         {
           eth_accounts: {},
@@ -122,29 +206,29 @@ const App = () => {
 
   if (loading === true) {
     content = (
-      <p className='text-center'>
-        Loading...{loading2 ? <div>loading....</div> : ''}
+      <p className="text-center">
+        Loading...{loading2 ? <div>loading....</div> : ""}
       </p>
     );
   } else {
     content = (
-      <div class='container'>
-        <main role='main' class='container'>
-          <div class='jumbotron'>
+      <div class="container">
+        <main role="main" class="container">
+          <div class="jumbotron">
             <h1>Project</h1>
-            <div className='row' style={{ paddingTop: '30px' }}>
-              {' '}
-              <div className='row' style={{ paddingLeft: '40px' }}>
+            <div className="row" style={{ paddingTop: "30px" }}>
+              {" "}
+              <div className="row" style={{ paddingLeft: "40px" }}>
                 <h3>text 1</h3>
               </div>
-              <div className='row' style={{ paddingLeft: '40px' }}>
+              <div className="row" style={{ paddingLeft: "40px" }}>
                 <h3>text 2</h3>
               </div>
-              <div className='row' style={{ paddingLeft: '40px' }}>
+              <div className="row" style={{ paddingLeft: "40px" }}>
                 <h3>text 3</h3>
               </div>
-              <div className='row' style={{ paddingLeft: '40px' }}>
-                <button className='btn btn-primary'>Click on it</button>
+              <div className="row" style={{ paddingLeft: "40px" }}>
+                <button className="btn btn-primary">Click on it</button>
               </div>
             </div>
           </div>
@@ -157,17 +241,22 @@ const App = () => {
     <div>
       <Navbar account={account} getNetwork={getNetwork} />
 
-      {account == '' ? (
-        <div className='container'>
-          {' '}
-          Connect your wallet to application{'   '}{' '}
-          <button onClick={walletAddress} style={{ color: 'black' }}>
+      {account == "" ? (
+        <div className="container">
+          {" "}
+          Connect your wallet to application{"   "}{" "}
+          <button onClick={walletAddress} style={{ color: "black" }}>
             metamask
           </button>
         </div>
       ) : (
         // content
-        <HomePage />
+        <HomePage
+          deposit={deposit}
+          harvest={harvest}
+          unstake={unstake}
+          getpendingrewards={getpendingrewards}
+        />
       )}
     </div>
   );
