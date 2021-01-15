@@ -3,10 +3,17 @@ import "./HomePage.scss";
 import swal from "sweetalert";
 import { Card, InputNumber, Button } from "antd";
 
-export const HomePage = ({ deposit, harvest, unstake, getpendingrewards }) => {
+export const HomePage = ({
+  deposit,
+  harvest,
+  unstake,
+  getpendingrewards,
+  farmcontractinfo,
+}) => {
   const value = "0.00000000";
 
-  const [inputval, setinputval] = useState(300000);
+  // console.log(intervalId);
+  const [inputval, setinputval] = useState(100);
   const onchangeinputval = (e) => {
     setinputval(e);
   };
@@ -21,13 +28,13 @@ export const HomePage = ({ deposit, harvest, unstake, getpendingrewards }) => {
     }
   };
 
-  const [inputvalunstake, setinputvalunstake] = useState(0);
+  const [inputvalunstake, setinputvalunstake] = useState(1);
   const onchangeinputvalunstake = (e) => {
-    setinputval(e);
+    setinputvalunstake(e);
   };
 
   const onsubmitunstake = () => {
-    // window.alert(inputvalunstake);
+    window.alert(inputvalunstake);
 
     if (inputvalunstake <= 0) {
       swal("input some value");
@@ -41,7 +48,7 @@ export const HomePage = ({ deposit, harvest, unstake, getpendingrewards }) => {
       <div className="cardContainer">
         <div className="card card1">
           <div className="cardSubContainer">
-            <div className="value">{value}</div>
+            <div className="value">{farmcontractinfo.farmpendingrewards}</div>
             <div className="valueName">Sushi status</div>
             <div className="btnContainer">
               <button className="btn card1Btn" onClick={harvest}>
@@ -58,11 +65,19 @@ export const HomePage = ({ deposit, harvest, unstake, getpendingrewards }) => {
                 className="inputBox"
               />
             </div>
+            <div> userinfoamount: {farmcontractinfo.farmuserinfoamount}</div>
+
+            <div>
+              {" "}
+              userinforewarddebt:{farmcontractinfo.farmuserinforewarddebt}
+            </div>
+
+            <div>pendingrewards :{farmcontractinfo.farmpendingrewards}</div>
           </div>
         </div>
         <div className="card card2">
           <div className="cardSubContainer">
-            <div className="value">{value}</div>
+            <div className="value">{farmcontractinfo.farmuserinfoamount} </div>
             <div className="valueName">Sushi status</div>
             <div className="btnContainer">
               <button className="btn card2Btn" onClick={onsubmitapprove}>

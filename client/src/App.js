@@ -7,6 +7,7 @@ import Navbar from "./Navbar";
 import Farmabi from "./contracts/Farm01.json";
 import swal from "sweetalert";
 import { HomePage } from "./FarmingUI/components/HomePage.js";
+import lptokenabi from "./contracts/lptoken.json";
 // import erc20abi from './contracts/SafeERC20.json';
 import tokenabi from "./contracts/token.json";
 const App = () => {
@@ -22,7 +23,11 @@ const App = () => {
   const [SIGNER, SETSIGNER] = useState({});
   const [flag, setflag] = useState(0);
   const [farmcontract, setfarmcontract] = useState({});
-  const [farmcontractinfo, setfarmcontractinfo] = useState({});
+  const [farmcontractinfo, setfarmcontractinfo] = useState({
+    farmuserinfoamount: 0,
+    farmuserinforewarddebt: 0,
+    farmpendingrewards: 0,
+  });
   const [tokencontract, settokencontract] = useState({});
   const [lptokenaddress, setlptokenaddress] = useState("");
   const [farmcontractaddress, setfarmcontractaddress] = useState("");
@@ -65,8 +70,10 @@ const App = () => {
       networkId = result.chainId;
     });
     if (networkId == 1) {
-      let addressoflptoken = "0xF71D9A8D70dF39DaCBd296b98c9b73998Ec8FD8e";
-      let addressoffarm = "0xF71D9A8D70dF39DaCBd296b98c9b73998Ec8FD8e";
+      // const addressoflptoken = "0xdad3E0De9Cb960EAd5e077FA74B97ED6f79Fc23C";
+      // const addressoffarm = "0xf3AC426A67D876FaFF61575Db57362064473A0eF";
+      const addressoflptoken = "0x5e4085B816fdC167410650d805f69d7013C896D8";
+      const addressoffarm = "0xF71D9A8D70dF39DaCBd296b98c9b73998Ec8FD8e";
       setlptokenaddress(addressoflptoken);
       setfarmcontractaddress(addressoffarm);
       // set network name here
@@ -80,10 +87,29 @@ const App = () => {
 
       let erc20smartcontract = new Contract(
         addressoflptoken,
-        tokenabi.abi,
+        lptokenabi.abi,
         signer
       );
       settokencontract(erc20smartcontract);
+
+      let name, symbol, tokenbalance, totalsupply;
+      // await tokencontract.name().then((result) => {
+      //   name = result;
+      // });
+      // await tokencontract.symbol().then((result) => {
+      //   symbol = result;
+      // });
+
+      // tokenbalance = await tokencontract.balanceOf(accounts[0]);
+      // await tokencontract.totalSupply().then((result) => {
+      //   totalsupply = ethers.utils.formatUnits(result, 18);
+      // });
+
+      // console.log(name);
+      // console.log(symbol);
+      // console.log(tokenbalance);
+      // console.log(totalsupply);
+
       // console.log(farmsmartcontract);
 
       let farmuserinfoamount, farmuserinforewarddebt, farmpendingrewards;
@@ -100,9 +126,15 @@ const App = () => {
         // console.log(result);
         farmpendingrewards = ethers.utils.formatUnits(result, 18);
       });
-      console.log(farmuserinfoamount);
-      console.log(farmuserinforewarddebt);
-      console.log(farmpendingrewards);
+
+      setfarmcontractinfo({
+        farmuserinfoamount,
+        farmuserinforewarddebt,
+        farmpendingrewards,
+      });
+      console.log("farmuserinfoamount" + farmuserinfoamount);
+      console.log("farmuserinforewarddebt" + farmuserinforewarddebt);
+      console.log("farmpendingrewards" + farmpendingrewards);
 
       // if you want to call data from smart contract follow below
       // suppose there is function in smart contract which returns something
@@ -123,16 +155,30 @@ const App = () => {
     }
   };
 
-  const getpendingrewards = async (a) => {
-    let x;
-    await farmcontract.pendingReward(a).then((result) => {
-      x = ethers.utils.formatUnits(result, 18);
+  const getpendingrewards = async () => {
+    let farmuserinfoamount, farmuserinforewarddebt, farmpendingrewards;
+    await farmcontract.userInfo(account).then((result) => {
+      // console.log(result);
+      farmuserinfoamount = ethers.utils.formatUnits(result.amount, 18);
+      farmuserinforewarddebt = ethers.utils.formatUnits(result.rewardDebt, 18);
     });
-    console.log(x);
-    return x;
-  };
+    await farmcontract.pendingReward(account).then((result) => {
+      // console.log(result);
+      farmpendingrewards = ethers.utils.formatUnits(result, 18);
+    });
+    console.log("farmuserinfoamount" + farmuserinfoamount);
+    console.log("farmuserinforewarddebt" + farmuserinforewarddebt);
+    console.log("farmpendingrewards" + farmpendingrewards);
 
-  // const intervalId = setInterval(getpendingrewards, 5000);
+    setfarmcontractinfo({
+      farmuserinfoamount,
+      farmuserinforewarddebt,
+      farmpendingrewards,
+    });
+  };
+  if (!loading && account != "") {
+    setInterval(getpendingrewards, 2000);
+  }
 
   // const approvelp = (async) => {
   //   try {
@@ -151,7 +197,7 @@ const App = () => {
   const deposit = async (a) => {
     try {
       const tx = await tokencontract.approve(
-        lptokenaddress,
+        farmcontractaddress,
         ethers.utils.parseEther(a.toString())
       );
       // swal("wait for one more transaction if it doest fail");
@@ -160,11 +206,12 @@ const App = () => {
       console.log(e);
       swal("the trasaction has been failed");
     }
-
+    window.alert(a);
     try {
       const tx = await farmcontract.deposit(
         ethers.utils.parseEther(a.toString())
       );
+      console.log(tx);
       const txsign = await tx.wait();
 
       setrefresh(1);
@@ -176,7 +223,7 @@ const App = () => {
 
   const harvest = async () => {
     try {
-      const tx = await farmcontract.deposit(ethers.utils.parseEther(0));
+      const tx = await farmcontract.deposit("0");
       const txsign = await tx.wait();
 
       setrefresh(1);
@@ -188,7 +235,9 @@ const App = () => {
 
   const unstake = async (a) => {
     try {
-      const tx = await farmcontract.withdraw(ethers.utils.parseEther(a));
+      const tx = await farmcontract.withdraw(
+        ethers.utils.parseEther(a.toString())
+      );
       const txsign = await tx.wait();
 
       setrefresh(1);
@@ -273,6 +322,7 @@ const App = () => {
           harvest={harvest}
           unstake={unstake}
           getpendingrewards={getpendingrewards}
+          farmcontractinfo={farmcontractinfo}
           // farmcontract = {farmcontract}
         />
       )}
