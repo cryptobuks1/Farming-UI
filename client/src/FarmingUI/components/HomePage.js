@@ -13,7 +13,7 @@ export const HomePage = ({
   const value = "0.00000000";
 
   // console.log(intervalId);
-  const [inputval, setinputval] = useState(100);
+  const [inputval, setinputval] = useState(10);
   const onchangeinputval = (e) => {
     setinputval(e);
   };
@@ -34,7 +34,7 @@ export const HomePage = ({
   };
 
   const onsubmitunstake = () => {
-    window.alert(inputvalunstake);
+    // window.alert(inputvalunstake);
 
     if (inputvalunstake <= 0) {
       swal("input some value");
@@ -49,7 +49,7 @@ export const HomePage = ({
         <div className="card card1">
           <div className="cardSubContainer">
             <div className="value">{farmcontractinfo.farmpendingrewards}</div>
-            <div className="valueName">Sushi status</div>
+            <div className="valueName">pending rewards</div>
             <div className="btnContainer">
               <button className="btn card1Btn" onClick={harvest}>
                 Harvest
@@ -58,32 +58,33 @@ export const HomePage = ({
               <button className="btn card1Btn" onClick={onsubmitunstake}>
                 unstake
               </button>
-              <InputNumber
-                min={1}
-                value={inputvalunstake}
-                onChange={onchangeinputvalunstake}
-                className="inputBox"
-              />
             </div>
-            <div> userinfoamount: {farmcontractinfo.farmuserinfoamount}</div>
+            <InputNumber
+              min={1}
+              value={inputvalunstake}
+              onChange={onchangeinputvalunstake}
+              className="inputBox"
+            />
+            {/* <div> userinfoamount: {farmcontractinfo.farmuserinfoamount}</div>
 
             <div>
               {" "}
               userinforewarddebt:{farmcontractinfo.farmuserinforewarddebt}
             </div>
 
-            <div>pendingrewards :{farmcontractinfo.farmpendingrewards}</div>
+            <div>pendingrewards :{farmcontractinfo.farmpendingrewards}</div> */}
           </div>
         </div>
         <div className="card card2">
           <div className="cardSubContainer">
             <div className="value">{farmcontractinfo.farmuserinfoamount} </div>
-            <div className="valueName">Sushi status</div>
+            <div className="valueName">lptoken depsoited</div>
             <div className="btnContainer">
               <button className="btn card2Btn" onClick={onsubmitapprove}>
                 deposit ETH_VNTW SLP
               </button>
             </div>
+
             <InputNumber
               min={1}
               value={inputval}
@@ -94,7 +95,15 @@ export const HomePage = ({
         </div>
       </div>
       <div className="footNoteContainer">
-        <div className="footNote">Get VNTW LP token on Uniswap</div>
+        <div className="footNote">
+          <a
+            target="_blank"
+            href="https://app.uniswap.org/#/add/ETH/0xd0f05D3D4e4d1243Ac826d8c6171180c58eaa9BC"
+          >
+            {" "}
+            Get VNTW LP token on Uniswap
+          </a>
+        </div>
       </div>
     </>
   );

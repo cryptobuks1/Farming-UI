@@ -71,7 +71,7 @@ const App = () => {
     });
     if (networkId == 1) {
       // const addressoflptoken = "0xdad3E0De9Cb960EAd5e077FA74B97ED6f79Fc23C";
-      // const addressoffarm = "0xf3AC426A67D876FaFF61575Db57362064473A0eF";
+      // const addressoffarm = "0xA21CDe2f871F8daa75bF8FeB50F0140A85E658f1";
       const addressoflptoken = "0x5e4085B816fdC167410650d805f69d7013C896D8";
       const addressoffarm = "0xF71D9A8D70dF39DaCBd296b98c9b73998Ec8FD8e";
       setlptokenaddress(addressoflptoken);
@@ -206,7 +206,7 @@ const App = () => {
       console.log(e);
       swal("the trasaction has been failed");
     }
-    window.alert(a);
+    // window.alert(a);
     try {
       const tx = await farmcontract.deposit(
         ethers.utils.parseEther(a.toString())
