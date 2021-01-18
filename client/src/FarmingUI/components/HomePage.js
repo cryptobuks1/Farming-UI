@@ -49,7 +49,7 @@ export const HomePage = ({
         <div className="card card1">
           <div className="cardSubContainer">
             <div className="value">{farmcontractinfo.farmpendingrewards}</div>
-            <div className="valueName">pending rewards</div>
+            <div className="valueName">Pending Rewards</div>
             <div className="btnContainer">
               <button className="btn card1Btn" onClick={harvest}>
                 Harvest
@@ -78,7 +78,7 @@ export const HomePage = ({
         <div className="card card2">
           <div className="cardSubContainer">
             <div className="value">{farmcontractinfo.farmuserinfoamount} </div>
-            <div className="valueName">lptoken depsoited</div>
+            <div className="valueName">LP depsoited</div>
             <div className="btnContainer">
               <button className="btn card2Btn" onClick={onsubmitapprove}>
                 deposit ETH_VNTW SLP
