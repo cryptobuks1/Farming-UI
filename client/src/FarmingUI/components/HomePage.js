@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./HomePage.scss";
 import swal from "sweetalert";
 import { Card, InputNumber, Button } from "antd";
@@ -9,6 +9,9 @@ export const HomePage = ({
   unstake,
   getpendingrewards,
   farmcontractinfo,
+  loading,
+  account,
+  farmcontract,
 }) => {
   const value = "0.00000000";
 

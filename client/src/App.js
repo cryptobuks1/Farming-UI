@@ -69,11 +69,11 @@ const App = () => {
     await provider.getNetwork().then((result) => {
       networkId = result.chainId;
     });
-    if (networkId == 1) {
-      // const addressoflptoken = "0xdad3E0De9Cb960EAd5e077FA74B97ED6f79Fc23C";
-      // const addressoffarm = "0xA21CDe2f871F8daa75bF8FeB50F0140A85E658f1";
-      const addressoflptoken = "0x5e4085B816fdC167410650d805f69d7013C896D8";
-      const addressoffarm = "0xF71D9A8D70dF39DaCBd296b98c9b73998Ec8FD8e";
+    if (networkId == 42) {
+      const addressoflptoken = "0xdad3E0De9Cb960EAd5e077FA74B97ED6f79Fc23C";
+      const addressoffarm = "0xA21CDe2f871F8daa75bF8FeB50F0140A85E658f1";
+      // const addressoflptoken = "0x5e4085B816fdC167410650d805f69d7013C896D8";
+      // const addressoffarm = "0xF71D9A8D70dF39DaCBd296b98c9b73998Ec8FD8e";
       setlptokenaddress(addressoflptoken);
       setfarmcontractaddress(addressoffarm);
       // set network name here
@@ -156,29 +156,36 @@ const App = () => {
   };
 
   const getpendingrewards = async () => {
-    let farmuserinfoamount, farmuserinforewarddebt, farmpendingrewards;
-    await farmcontract.userInfo(account).then((result) => {
-      // console.log(result);
-      farmuserinfoamount = ethers.utils.formatUnits(result.amount, 18);
-      farmuserinforewarddebt = ethers.utils.formatUnits(result.rewardDebt, 18);
-    });
-    await farmcontract.pendingReward(account).then((result) => {
-      // console.log(result);
-      farmpendingrewards = ethers.utils.formatUnits(result, 18);
-    });
-    console.log("farmuserinfoamount" + farmuserinfoamount);
-    console.log("farmuserinforewarddebt" + farmuserinforewarddebt);
-    console.log("farmpendingrewards" + farmpendingrewards);
+    console.log("hello getrewards");
+    console.log(farmcontract);
+    console.log(farmcontractaddress);
+    console.log(account);
+    console.log(loading);
+    if (loading === false && account != "") {
+      let farmuserinfoamount, farmuserinforewarddebt, farmpendingrewards;
+      await farmcontract.userInfo(account).then((result) => {
+        // console.log(result);
+        farmuserinfoamount = ethers.utils.formatUnits(result.amount, 18);
+        farmuserinforewarddebt = ethers.utils.formatUnits(
+          result.rewardDebt,
+          18
+        );
+      });
+      await farmcontract.pendingReward(account).then((result) => {
+        // console.log(result);
+        farmpendingrewards = ethers.utils.formatUnits(result, 18);
+      });
+      console.log("farmuserinfoamount" + farmuserinfoamount);
+      console.log("farmuserinforewarddebt" + farmuserinforewarddebt);
+      console.log("farmpendingrewards" + farmpendingrewards);
 
-    setfarmcontractinfo({
-      farmuserinfoamount,
-      farmuserinforewarddebt,
-      farmpendingrewards,
-    });
+      setfarmcontractinfo({
+        farmuserinfoamount,
+        farmuserinforewarddebt,
+        farmpendingrewards,
+      });
+    }
   };
-  if (!loading && account != "") {
-    setInterval(getpendingrewards, 2000);
-  }
 
   // const approvelp = (async) => {
   //   try {
@@ -267,8 +274,19 @@ const App = () => {
       setrefresh(0);
       loadBlockchainData();
     }
-    //esl
   }, [refresh]);
+
+  useEffect(() => {
+    const init = async () => {
+      setInterval(() => {
+        getpendingrewards();
+        // console.log(loading);
+      }, 10000);
+    };
+    if (typeof farmcontract !== "undefined" && loading == false) {
+      init();
+    }
+  }, [farmcontract, loading]);
 
   if (loading === true) {
     content = (
@@ -323,7 +341,9 @@ const App = () => {
           unstake={unstake}
           getpendingrewards={getpendingrewards}
           farmcontractinfo={farmcontractinfo}
-          // farmcontract = {farmcontract}
+          loading={loading}
+          account={account}
+          farmcontract={farmcontract}
         />
       )}
     </div>
