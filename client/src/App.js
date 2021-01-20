@@ -69,11 +69,11 @@ const App = () => {
     await provider.getNetwork().then((result) => {
       networkId = result.chainId;
     });
-    if (networkId == 42) {
-      const addressoflptoken = "0xdad3E0De9Cb960EAd5e077FA74B97ED6f79Fc23C";
-      const addressoffarm = "0xA21CDe2f871F8daa75bF8FeB50F0140A85E658f1";
-      // const addressoflptoken = "0x5e4085B816fdC167410650d805f69d7013C896D8";
-      // const addressoffarm = "0xF71D9A8D70dF39DaCBd296b98c9b73998Ec8FD8e";
+    if (networkId == 1) {
+      // const addressoflptoken = "0xdad3E0De9Cb960EAd5e077FA74B97ED6f79Fc23C";
+      // const addressoffarm = "0x6ABd7809854cc79B15348e05fdD60c0E1Df2b0Ac";
+      const addressoflptoken = "0x5e4085B816fdC167410650d805f69d7013C896D8";
+      const addressoffarm = "0xF71D9A8D70dF39DaCBd296b98c9b73998Ec8FD8e";
       setlptokenaddress(addressoflptoken);
       setfarmcontractaddress(addressoffarm);
       // set network name here
@@ -255,15 +255,16 @@ const App = () => {
   };
 
   const walletAddress = async () => {
-    await window.ethereum.request({
+    const accounts = await window.ethereum.request({
       method: "eth_requestAccounts",
-      params: [
-        {
-          eth_accounts: {},
-        },
-      ],
     });
-    window.location.reload();
+    console.log(accounts);
+    if (accounts.length == 0) {
+      return;
+    }
+
+    setAccount(accounts[0]);
+    loadBlockchainData();
   };
 
   useEffect(() => {
