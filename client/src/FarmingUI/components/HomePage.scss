@@ -1,15 +1,27 @@
-// $medium-pink: rgb(226, 214, 207);
-// $light-pink: rgb(247, 244, 242);
-// $brown: rgb(91, 57, 38);
 $medium-dark: #121212;
-$light-dark: #363636;
-$white: white;
+$light-dark: #2c2c2c;
+$grey: #b2b2b2;
+$white: #ffffff;
+$green: #00c98d;
+$blue: #4770ff;
 
-.cardContainer {
-  height: 100%;
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+.allContainer {
   min-height: 100vh;
+}
+.cardContainer {
+  padding: 5rem 0 0 0;
+  height: 100%;
   width: 100%;
-  background-color: $medium-dark;
+  background-color: $light-dark;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,7 +32,7 @@ $white: white;
     width: calc(min(100%, 350px));
     height: 350px;
     border-radius: 15px;
-    background-color: $light-dark;
+    background-color: $white;
 
     .cardSubContainer {
       display: flex;
@@ -29,46 +41,39 @@ $white: white;
       flex-direction: column;
       .value,
       .valueName {
-        font-family: 'Roboto Mono', monospace;
         font-size: 1.5rem;
-        color: $white;
-      }
-      .value {
-        color: #00c98d;
+        color: $medium-dark;
       }
       .valueName {
         font-size: 1rem;
+        color: $grey;
       }
       .btnContainer {
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 1rem;
         .btn {
           margin: 1rem;
+          border-radius: 7px;
+          background-color: $green;
           color: white;
-          border-color: $medium-dark;
-          // box-shadow: rgb(226, 214, 207) 6px 6px 12px,
-          //   rgb(247, 244, 242) -12px -12px 24px -2px;
         }
         .btn:hover {
-          background-color: $medium-dark;
-          box-shadow: 0px 0px 5px white;
+          box-shadow: 0px 0px 5px $light-dark;
         }
       }
     }
   }
 }
 .footNoteContainer {
-  font-family: 'Roboto Mono', monospace;
   font-size: 1rem;
-  background-color: $medium-dark;
+  background-color: $light-dark;
   color: $white;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
+  padding: 1rem 0 4rem 0;
   a {
     color: $white;
   }
@@ -79,22 +84,81 @@ $white: white;
   }
 }
 
-.inputBox {
-  .ant-input-number {
-    display: block;
+.inputBox,
+.inputBox:focus {
+  outline: none;
+  border-radius: 10px;
+  border: 1px solid $light-dark;
+  padding: 1rem;
+}
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  border: 1px solid red;
+}
+
+.footer {
+  background-color: $medium-dark;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  font-family: 'Poppins', sans-serif;
+  flex-wrap: wrap;
+  .socialMediaBtn {
+    max-height: 50px;
+    padding: 10px;
+    border-radius: 25px;
+    margin: 0.5rem;
     display: flex;
-    justify-content: space-around;
-    // flex-wrap: wrap;
-    .ant-input-number-input {
-      order: 0;
-    }
-    .ant-input-number-handler-wrap {
-      order: 1;
-    }
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    background-color: $light-dark;
+    border: 1px solid $light-dark;
+    color: $white;
   }
-  .btn {
-    border-color: $medium-dark;
-    // box-shadow: rgb(226, 214, 207) 6px 6px 12px,
-    //   rgb(247, 244, 242) -12px -12px 24px -2px;
+  .socialMediaBtn:focus {
+    outline: none;
   }
+  img {
+    margin-right: 5px;
+  }
+}
+
+.writeToUs {
+  background-color: $blue !important;
+}
+
+.footer2 {
+  font-family: 'Poppins', sans-serif;
+  padding: 1rem;
+  background-color: $medium-dark;
+  color: $light-dark;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.uniswapBtn {
+  margin: 1rem;
+  display: flex;
+  background-color: $light-dark;
+  color: $white;
+  border: 1px solid $white;
+  border-radius: 10px;
+  padding: 10px;
+  .uniswapName {
+    margin-left: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+.uniswapBtn:focus {
+  outline: none;
+}
+
+a {
+  text-decoration: none !important;
+  color: white !important;
 }

@@ -1,13 +1,16 @@
-import React from "react";
+import React from 'react';
+import './Navbar.scss';
+import Logo from './Images/logo.png';
 
 const Navbar = ({ account }) => {
   return (
-    <nav className="navbar navbar-dark bg-dark shadow mb-5">
-      <p className="navbar-brand my-auto">react website</p>
-      <ul className="navbar-nav">
-        <li className="nav-item text-white">{account}</li>
-      </ul>
-    </nav>
+    <div className='navbarContainer'>
+      <img src={Logo} alt='Company Logjo' height='20px' />
+
+      <button className='accBtn'>
+        <div className='acc'>{account}</div>
+      </button>
+    </div>
   );
 };
 

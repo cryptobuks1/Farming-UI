@@ -1,0 +1,20 @@
+.navbarContainer {
+  font-family: 'Poppins', sans-serif;
+  padding: 1rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #121212;
+  color: white;
+  .accBtn {
+    font-family: 'Ubuntu', sans-serif;
+    background-color: white;
+    color: #121212;
+    padding: 0.5rem;
+    border-radius: 10px;
+  }
+  .accBtn:focus {
+    font-family: 'Ubuntu', sans-serif;
+    outline: none;
+  }
+}
